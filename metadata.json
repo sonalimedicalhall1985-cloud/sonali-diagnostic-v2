@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Sonali Diagnostic Center",
+  "description": "Enterprise Diagnostic Center Management System for Sonali Diagnostic Center with laboratory workflows, billing, doctor chamber scheduling, and queue tokens.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

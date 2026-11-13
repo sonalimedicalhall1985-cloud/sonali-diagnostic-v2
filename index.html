@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sonali Diagnostic Center - Quality Healthcare & Diagnostic ERP</title>
+    <meta name="description" content="Sonali Diagnostic Center - Enterprise Diagnostic Center Management System. Quality Healthcare • Trusted Diagnostic Services." />
+    <meta name="theme-color" content="#0f2744" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="SonaliDiag" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta property="og:title" content="Sonali Diagnostic Center - Quality Healthcare & Diagnostic ERP" />
+    <meta property="og:description" content="Sonali Diagnostic Center - Enterprise Diagnostic Center Management System. Quality Healthcare • Trusted Diagnostic Services." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Disable Vite HMR WebSocket handshake in preview iframe cleanly while keeping all other WebSockets untouched
+      (function () {
+        var NativeWebSocket = window.WebSocket;
+        if (typeof NativeWebSocket === 'function') {
+          window.WebSocket = function (url, protocols) {
+            var protoStr = Array.isArray(protocols) ? protocols.join(',') : String(protocols || '');
+            var urlStr = String(url || '');
+            if (
+              protoStr.indexOf('vite-hmr') !== -1 ||
+              protoStr.indexOf('vite-ping') !== -1 ||
+              urlStr.indexOf('vite-hmr') !== -1
+            ) {
+              var listeners = {};
+              var noopSocket = {
+                url: urlStr,
+                readyState: 1,
+                CONNECTING: 0,
+                OPEN: 1,
+                CLOSING: 2,
+                CLOSED: 3,
+                protocol: protoStr,
+                extensions: '',
+                bufferedAmount: 0,
+                binaryType: 'blob',
+                send: function () {},
+                close: function () {},
+                addEventListener: function (type, cb) {
+                  if (!listeners[type]) listeners[type] = [];
+                  listeners[type].push(cb);
+                  if (type === 'open' && typeof cb === 'function') {
+                    setTimeout(function () {
+                      try { cb({ type: 'open', target: noopSocket }); } catch (e) {}
+                    }, 0);
+                  }
+                },
+                removeEventListener: function (type, cb) {
+                  if (!listeners[type]) return;
+                  listeners[type] = listeners[type].filter(function (fn) { return fn !== cb; });
+                },
+                dispatchEvent: function () { return true; },
+              };
+              return noopSocket;
+            }
+            return protocols !== undefined ? new NativeWebSocket(url, protocols) : new NativeWebSocket(url);
+          };
+          window.WebSocket.prototype = NativeWebSocket.prototype;
+          window.WebSocket.CONNECTING = NativeWebSocket.CONNECTING;
+          window.WebSocket.OPEN = NativeWebSocket.OPEN;
+          window.WebSocket.CLOSING = NativeWebSocket.CLOSING;
+          window.WebSocket.CLOSED = NativeWebSocket.CLOSED;
+        }
+      })();
+
+      // Gracefully suppress benign Vite HMR WebSocket connection closed error in preview iframe
+      window.addEventListener('error', function(event) {
+        if (
+          event &&
+          (
+            (event.message && (event.message.includes('WebSocket') || event.message.includes('ws://') || event.message.includes('wss://'))) ||
+            (event.filename && event.filename.includes('@vite/client'))
+          )
+        ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function(event) {
+        if (
+          event &&
+          event.reason &&
+          (
+            String(event.reason).includes('WebSocket') ||
+            String(event.reason).includes('@vite/client')
+          )
+        ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

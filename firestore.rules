@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net: Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'sonalimedicalhall1985@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // 3. Cloud Backup Manifests
+    match /backups/{backupId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(backupId);
+      allow update: if isSignedIn() && isValidId(backupId);
+      allow delete: if isAdmin() && isValidId(backupId);
+
+      // Subcollections for patient records and diagnostic reports in this snapshot
+      match /patients/{patientDocId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && isValidId(backupId) && isValidId(patientDocId);
+      }
+
+      match /diagnostics/{diagDocId} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && isValidId(backupId) && isValidId(diagDocId);
+      }
+    }
+
+    // 4. Backup Scheduler Settings and Telemetry
+    match /backup_settings/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(configId);
+    }
+  }
+}

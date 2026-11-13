@@ -1,0 +1,134 @@
+{
+  "entities": {
+    "CloudBackup": {
+      "title": "Cloud Backup Snapshot",
+      "description": "Hourly and manual cloud backup metadata containing clinical data counters and verification hashes",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique backup identifier (e.g. backup_20261111_150000)"
+        },
+        "triggerType": {
+          "type": "string",
+          "enum": ["hourly_auto", "manual"],
+          "description": "Whether the backup was automatically triggered by the hourly schedule or manually initiated"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "in_progress", "failed"],
+          "description": "Execution status of the backup snapshot"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp when the backup was created"
+        },
+        "patientCount": {
+          "type": "number",
+          "description": "Total number of patient records secured in this snapshot"
+        },
+        "diagnosticCount": {
+          "type": "number",
+          "description": "Total number of diagnostic lab reports secured in this snapshot"
+        },
+        "invoiceCount": {
+          "type": "number",
+          "description": "Total number of billing invoices secured in this snapshot"
+        },
+        "appointmentCount": {
+          "type": "number",
+          "description": "Total number of doctor chamber serials secured in this snapshot"
+        },
+        "sizeBytes": {
+          "type": "number",
+          "description": "Total estimated payload size in bytes"
+        },
+        "databaseId": {
+          "type": "string",
+          "description": "Target Firestore database ID"
+        },
+        "checksum": {
+          "type": "string",
+          "description": "Verification hash string"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional administrative notes or error logs"
+        }
+      },
+      "required": ["id", "triggerType", "status", "timestamp", "patientCount", "diagnosticCount"]
+    },
+    "PatientRecord": {
+      "title": "Patient Record",
+      "description": "Patient clinical intake profile secured in cloud backup",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "number" },
+        "gender": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "bloodGroup": { "type": "string" },
+        "bloodPressure": { "type": "string" },
+        "systolicBp": { "type": "string" },
+        "diastolicBp": { "type": "string" },
+        "weightKg": { "type": "string" },
+        "isProxyPhone": { "type": "boolean" },
+        "backupTimestamp": { "type": "string" }
+      },
+      "required": ["id", "name", "gender"]
+    },
+    "DiagnosticReport": {
+      "title": "Diagnostic Report",
+      "description": "Laboratory test result and pathological analysis report secured in backup",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "reportId": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "testName": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string" },
+        "backupTimestamp": { "type": "string" }
+      },
+      "required": ["id", "reportId", "patientName", "testName"]
+    },
+    "BackupSetting": {
+      "title": "Backup Setting",
+      "description": "System-wide automated backup scheduler configuration and health state",
+      "type": "object",
+      "properties": {
+        "autoBackupEnabled": { "type": "boolean" },
+        "scheduleIntervalHours": { "type": "number" },
+        "lastBackupAt": { "type": "string" },
+        "nextScheduledAt": { "type": "string" },
+        "lastStatus": { "type": "string" },
+        "lastSnapshotId": { "type": "string" },
+        "totalBackupsRecorded": { "type": "number" },
+        "retentionDays": { "type": "number" }
+      },
+      "required": ["autoBackupEnabled", "scheduleIntervalHours"]
+    }
+  },
+  "firestore": {
+    "/backups/{backupId}": {
+      "schema": "CloudBackup",
+      "description": "Cloud backup snapshot metadata and record metrics"
+    },
+    "/backups/{backupId}/patients/{patientDocId}": {
+      "schema": "PatientRecord",
+      "description": "Patient records archived in this snapshot"
+    },
+    "/backups/{backupId}/diagnostics/{diagDocId}": {
+      "schema": "DiagnosticReport",
+      "description": "Diagnostic lab reports archived in this snapshot"
+    },
+    "/backup_settings/{configId}": {
+      "schema": "BackupSetting",
+      "description": "Cloud auto-backup scheduler configuration and telemetry"
+    }
+  }
+}
